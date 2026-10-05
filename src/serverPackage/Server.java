@@ -8,6 +8,7 @@ public class Server {
         System.out.println("Je suis un serveur en attente la connexion d'un client");
         Socket socket = socketServeur.accept();
         System.out.println("un client est connecté");
-
+        socket.close();
+        socketServeur.close();
     }
 }
