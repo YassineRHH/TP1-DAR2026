@@ -14,7 +14,18 @@ public class Client {
         int x=scanner.nextInt();
         OutputStream os=socket.getOutputStream();
         DataOutputStream dos=new DataOutputStream(os);
-        dos.write
+        dos.writeInt(x);
+        System.out.println("Nombre envoyé au serveur "+x);
+        InputStream is=socket.getInputStream();
+        DataInputStream dis=new DataInputStream(is);
+        int xx=dis.readInt();
+        System.out.println("Result recu du serveur "+ xx);
+
+        dis.close();
+        dos.close();
+        scanner.close();
+
+
 
 
         socket.close();
