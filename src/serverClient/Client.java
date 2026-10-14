@@ -1,36 +1,41 @@
 package serverClient;
+
 import java.io.*;
 import java.net.*;
 import java.util.Scanner;
 
 public class Client {
-    public static void main(String[] args)
-            throws IOException {
-        System.out.println("Je suis un client pas encore connecté");
-        Socket socket = new Socket("localhost", 1234);
-        System.out.println("Je suis connecté");
+    static final String IP_SERVEUR = "192.168.1.10"; // adresse IP de la machine serveur
+    static final int PORT = 1234;
 
-        Scanner scanner=new Scanner(System.in);
-        System.out.println("Entrer un entier x :");
-        int x=scanner.nextInt();
+    public static void main(String[] args) throws IOException {
+        Scanner sc = new Scanner(System.in);
 
-        OutputStream os=socket.getOutputStream();
-        DataOutputStream dos=new DataOutputStream(os);
+        InetAddress adresseIp = InetAddress.getByName(IP_SERVEUR);
+        InetSocketAddress adresseServeur = new InetSocketAddress(adresseIp, PORT);
+
+        System.out.println("Je suis un client pas encore connecté…");
+        Socket socket = new Socket();
+        socket.connect(adresseServeur);   // abandon après 5000 ms sans réponse
+        System.out.println("Je suis un client connecté à " + IP_SERVEUR + ":" + PORT);
+
+        DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+        DataInputStream dis = new DataInputStream(socket.getInputStream());
+
+        System.out.print("x : ");
+        int x = sc.nextInt();
+        System.out.print("Opération (+ - * /) : ");
+        char op = sc.next().charAt(0);
+        System.out.print("y : ");
+        int y = sc.nextInt();
+
         dos.writeInt(x);
-        System.out.println("Nombre envoyé au serveur "+x);
+        dos.writeChar(op);
+        dos.writeInt(y);
 
-        InputStream is=socket.getInputStream();
-        DataInputStream dis=new DataInputStream(is);
-        int xx=dis.readInt();
-        System.out.println("Result recu du serveur "+ xx);
-
-        dis.close();
-        dos.close();
-        scanner.close();
-
-
-
+        System.out.println("Résultat : " + x + " " + op + " " + y + " = " + dis.readUTF());
 
         socket.close();
-
-    }}
+        sc.close();
+    }
+}
