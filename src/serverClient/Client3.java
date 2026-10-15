@@ -15,26 +15,35 @@ public class Client3 {
         InetSocketAddress adresseServeur = new InetSocketAddress(adresseIp, PORT);
 
         System.out.println("Je suis un client pas encore connecté…");
-        Socket socket = new Socket();
-        socket.connect(adresseServeur);   // abandon après 5000 ms sans réponse
+        Socket socket = new Socket();            // socket créée, pas encore connectée
+        socket.connect(adresseServeur, 5000);    // abandon après 5000 ms sans réponse
         System.out.println("Je suis un client connecté à " + IP_SERVEUR + ":" + PORT);
 
         DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
         DataInputStream dis = new DataInputStream(socket.getInputStream());
 
-        System.out.print("x : ");
+        // Menu de choix de l'opération
+        System.out.println("===== Calculatrice =====");
+        System.out.println("1. Addition");
+        System.out.println("2. Soustraction");
+        System.out.println("3. Multiplication");
+        System.out.println("4. Division");
+        System.out.print("Votre choix : ");
+        int choix = sc.nextInt();
+
+        System.out.print("Entrez la valeur de x : ");
         int x = sc.nextInt();
-        System.out.print("Opération (+ - * /) : ");
-        char op = sc.next().charAt(0);
-        System.out.print("y : ");
-        int y = sc.nextInt();
 
+        // Envoi du choix et de x au serveur
+        dos.writeInt(choix);
         dos.writeInt(x);
-        dos.writeChar(op);
-        dos.writeInt(y);
 
-        System.out.println("Résultat : " + x + " " + op + " " + y + " = " + dis.readUTF());
+        // Réception et affichage du résultat
+        double resultat = dis.readDouble();
+        System.out.println("Résultat reçu du serveur : " + resultat);
 
+        dis.close();
+        dos.close();
         socket.close();
         sc.close();
     }

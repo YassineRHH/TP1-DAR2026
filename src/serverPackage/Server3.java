@@ -7,7 +7,7 @@ public class Server3 {
     static final int PORT = 1234;
 
     public static void main(String[] args) throws IOException {
-        // IP de cette machine : en argument, sinon détectée automatiquement
+        // IP réelle de cette machine : en argument, sinon détectée automatiquement
         String ip = (args.length > 0) ? args[0] : InetAddress.getLocalHost().getHostAddress();
 
         InetAddress adresseIp = InetAddress.getByName(ip);
@@ -23,22 +23,41 @@ public class Server3 {
         DataInputStream dis = new DataInputStream(socket.getInputStream());
         DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 
+        // Réception du choix de l'opération et de la valeur x
+        int choix = dis.readInt();
         int x = dis.readInt();
-        char op = dis.readChar();
-        int y = dis.readInt();
-        System.out.println("Reçu : " + x + " " + op + " " + y);
+        System.out.println("Le serveur a reçu : choix = " + choix + ", x = " + x);
 
-        String resultat;
-        if (op == '+') resultat = "" + (x + y);
-        else if (op == '-') resultat = "" + (x - y);
-        else if (op == '*') resultat = "" + (x * y);
-        else if (op == '/' && y != 0) resultat = "" + ((double) x / y);
-        else if (op == '/') resultat = "Erreur : division par zéro";
-        else resultat = "Erreur : opération invalide";
+        // Calcul côté serveur selon l'opération choisie
+        double resultat;
+        switch (choix) {
+            case 1:
+                resultat = x + 5;
+                System.out.println("Calcul du serveur : " + x + " + 5 = " + resultat);
+                break;
+            case 2:
+                resultat = x - 5;
+                System.out.println("Calcul du serveur : " + x + " - 5 = " + resultat);
+                break;
+            case 3:
+                resultat = x * 5;
+                System.out.println("Calcul du serveur : " + x + " * 5 = " + resultat);
+                break;
+            case 4:
+                resultat = x / 5.0;
+                System.out.println("Calcul du serveur : " + x + " / 5 = " + resultat);
+                break;
+            default:
+                resultat = Double.NaN;
+                System.out.println("Choix invalide : " + choix);
+        }
 
-        dos.writeUTF(resultat);
-        System.out.println("Résultat envoyé : " + resultat);
+        // Envoi du résultat au client
+        dos.writeDouble(resultat);
+        System.out.println("Le résultat est envoyé au client : " + resultat);
 
+        dis.close();
+        dos.close();
         socket.close();
         serveur.close();
     }
