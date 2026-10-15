@@ -4,7 +4,7 @@ import java.io.*;
 import java.net.*;
 import java.util.Scanner;
 
-public class Client {
+public class Client3 {
     static final String IP_SERVEUR = "192.168.1.10"; // adresse IP de la machine serveur
     static final int PORT = 1234;
 

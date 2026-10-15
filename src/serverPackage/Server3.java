@@ -3,7 +3,7 @@ package serverPackage;
 import java.io.*;
 import java.net.*;
 
-public class Server {
+public class Server3 {
     static final int PORT = 1234;
 
     public static void main(String[] args) throws IOException {
